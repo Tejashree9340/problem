@@ -1,0 +1,7 @@
+import { NextResponse } from 'next/server';
+import { put } from '@vercel/blob';
+import { auth } from '@/auth';
+import { db } from '@/lib/db';
+
+const allowed = new Set(['image/png', 'image/jpeg', 'application/pdf', 'text/plain']);
+export async function POST(request: Request) { const session = await auth(); if (!session?.user?.id) return NextResponse.json({ error: 'Authentication required' }, { status: 401 }); const form = await request.formData(); const attemptId = String(form.get('attemptId') || ''); const file = form.get('file'); if (!(file instanceof File) || !attemptId) return NextResponse.json({ error: 'File and attemptId are required' }, { status: 400 }); if (!allowed.has(file.type) || file.size > 10 * 1024 * 1024) return NextResponse.json({ error: 'Unsupported file type or size' }, { status: 400 }); const attempt = await db.problemAttempt.findFirst({ where: { id: attemptId, userId: session.user.id } }); if (!attempt) return NextResponse.json({ error: 'Attempt not found' }, { status: 404 }); const blob = await put(`evidence/${session.user.id}/${attemptId}/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`, file, { access: 'public', addRandomSuffix: false }); const evidence = await db.evidence.create({ data: { attemptId, type: file.type, url: blob.url, description: file.name, access: 'PRIVATE' } }); return NextResponse.json({ id: evidence.id, url: blob.url }); }
