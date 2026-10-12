@@ -1,0 +1,3 @@
+import Link from 'next/link';
+
+export default function NotFoundPage() { return <main className="grid min-h-screen place-items-center bg-[#f5eee6] p-6"><div className="max-w-md text-center"><p className="text-xs font-bold uppercase tracking-[.18em] text-[#ff6b4a]">404 / Ghost missing</p><h1 className="mt-4 font-display text-5xl font-bold">That page is not here.</h1><p className="mt-4 text-[#777382]">It may have been archived or the address may be incorrect.</p><Link href="/" className="mt-7 inline-block rounded-full bg-[#171622] px-5 py-3 font-bold text-white">Return to yard</Link></div></main>; }
