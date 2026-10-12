@@ -1,13 +1,14 @@
-import { cookies } from 'next/headers';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 import { db } from './db';
 
 export async function currentUser() {
-  const id = cookies().get('problem_coffin_user')?.value;
-  return id ? db.user.findUnique({ where: { id } }) : null;
+  const session = await auth();
+  if (!session?.user?.id) return null;
+  return db.user.findUnique({ where: { id: session.user.id } });
 }
-
 export async function requireUser() {
   const user = await currentUser();
-  if (!user) throw new Error('Authentication required');
+  if (!user) redirect('/sign-in');
   return user;
 }
