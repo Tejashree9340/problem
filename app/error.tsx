@@ -1,0 +1,3 @@
+import Link from 'next/link';
+
+export default function ErrorPage() { return <main className="grid min-h-screen place-items-center bg-[#f5eee6] p-6"><div className="max-w-md text-center"><p className="text-xs font-bold uppercase tracking-[.18em] text-[#ff6b4a]">Problem Coffin</p><h1 className="mt-4 font-display text-5xl font-bold">Something went wrong.</h1><p className="mt-4 text-[#777382]">The problem was not deleted. Please try again or return to the Coffin Yard.</p><Link href="/" className="mt-7 inline-block rounded-full bg-[#171622] px-5 py-3 font-bold text-white">Return to yard</Link></div></main>; }
