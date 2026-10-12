@@ -1,0 +1,7 @@
+export type DemoProblem = { id: string; title: string; description: string; organization: string; sourceName: string; sourceUrl?: string; domain: string; technologies: string; deadline?: string; status: string; lastCheckedAt: string };
+
+export const demoProblems: DemoProblem[] = [
+  { id: 'pc-001', title: 'Build reliable LiDAR mapping for difficult terrain', description: 'Create a mapping workflow that helps teams interpret sparse LiDAR data in terrain where conventional positioning is unreliable.', organization: 'Defence Innovation Lab', sourceName: 'Official challenge brief', domain: 'AI / ML', technologies: 'Computer Vision, Robotics', deadline: 'Unknown', status: 'OPEN', lastCheckedAt: 'Checked 2 days ago' },
+  { id: 'pc-002', title: 'Make crop disease detection useful offline', description: 'Help smallholder farmers identify common crop diseases without dependable internet access or expensive hardware.', organization: 'AgriTech Commons', sourceName: 'Partner collection', domain: 'Agriculture', technologies: 'Edge AI, Mobile', deadline: '18 Nov 2026', status: 'OPEN', lastCheckedAt: 'Checked 5 days ago' },
+  { id: 'pc-003', title: 'Turn public transport data into accessible journeys', description: 'Design a way for people with different accessibility needs to plan more confident journeys across fragmented transport systems.', organization: 'City Mobility Office', sourceName: 'Official problem statement', domain: 'Accessibility', technologies: 'Civic Tech, Data', deadline: 'Not provided', status: 'OPEN', lastCheckedAt: 'Checked 1 week ago' },
+];
