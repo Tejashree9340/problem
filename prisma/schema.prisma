@@ -1,0 +1,15 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+enum ProblemStatus { DRAFT PUBLISHED OPEN CLOSED EXPIRED ARCHIVED SOURCE_UNAVAILABLE }
+enum AttemptStatus { PLANNED CLAIMED BUILDING TESTING SUBMITTED CHANGES_REQUESTED COMPLETED PAUSED ABANDONED }
+enum ReviewStatus { UNREVIEWED PENDING ACCEPTED REJECTED CHANGES_REQUESTED }
+enum ImpactStatus { NOT_SUBMITTED EVIDENCE_SUBMITTED UNDER_REVIEW CONFIRMED CHANGES_REQUESTED }
+
+model ProblemStatement { id String @id @default(cuid()); title String; description String; organization String; sourceName String; sourceUrl String?; domain String; technologies String; deadline DateTime?; status ProblemStatus @default(OPEN); createdAt DateTime @default(now()); updatedAt DateTime @updatedAt; attempts ProblemAttempt[]; saves Save[]; auditEvents AuditEvent[] }
+model User { id String @id @default(cuid()); email String @unique; displayName String; skills String; createdAt DateTime @default(now()); saves Save[]; attempts ProblemAttempt[]; auditEvents AuditEvent[]; reviews Review[] }
+model Save { userId String; problemId String; createdAt DateTime @default(now()); user User @relation(fields: [userId], references: [id]); problem ProblemStatement @relation(fields: [problemId], references: [id]); @@id([userId, problemId]) }
+model ProblemAttempt { id String @id @default(cuid()); problemId String; userId String; status AttemptStatus @default(PLANNED); reviewStatus ReviewStatus @default(UNREVIEWED); impactStatus ImpactStatus @default(NOT_SUBMITTED); plan String?; createdAt DateTime @default(now()); updatedAt DateTime @updatedAt; problem ProblemStatement @relation(fields: [problemId], references: [id]); user User @relation(fields: [userId], references: [id]); submissions SolutionSubmission[]; auditEvents AuditEvent[] }
+model SolutionSubmission { id String @id @default(cuid()); attemptId String; version Int; description String; repositoryUrl String?; demoUrl String?; evidence String; limitations String?; createdAt DateTime @default(now()); attempt ProblemAttempt @relation(fields: [attemptId], references: [id]); reviews Review[] }
+model Review { id String @id @default(cuid()); submissionId String; reviewerId String; decision ReviewStatus; criteria String; notes String; createdAt DateTime @default(now()); submission SolutionSubmission @relation(fields: [submissionId], references: [id]); reviewer User @relation(fields: [reviewerId], references: [id]) }
+model AuditEvent { id String @id @default(cuid()); actorId String; problemId String?; attemptId String?; action String; priorState String?; newState String?; reason String?; createdAt DateTime @default(now()); actor User @relation(fields: [actorId], references: [id]); problem ProblemStatement? @relation(fields: [problemId], references: [id]); attempt ProblemAttempt? @relation(fields: [attemptId], references: [id]) }
